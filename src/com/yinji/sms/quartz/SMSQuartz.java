@@ -1,14 +1,156 @@
 package com.yinji.sms.quartz;
 
+import java.util.List;
+
+import javax.annotation.Resource;
+
+import com.yinji.sms.bean.AlarmBean;
+import com.yinji.sms.bean.SMSBean;
+import com.yinji.sms.service.SMSService;
+
+/**
+ * @author : Roger
+ * @date : 2015-10-30
+ * @desc : 短信定时任务
+ */
 public class SMSQuartz {
+
+	@Resource(name = "smsService")
+	private SMSService smsService;
+
 	/**
-	 * quartz调用的方法
+	 * 任务执行方法
 	 */
-	public void execute(){
-		try {
-			System.out.println("SMSQuartz开始作业调度了..");
- 		} catch (Exception e) {
- 			e.printStackTrace();
-		} 
+	public void execute() {
+		System.out.println("SMSQuartz开始作业调度了..");
+
+		// --------------------第一次发送短信--------------------------//
+		fristSend();
+		// --------------------第一次发送短信--------------------------//
+
+		// --------------------第二次发送短信--------------------------//
+		secondSend();
+		// --------------------第二次发送短信--------------------------//
+		
+		// --------------------第三次发送短信--------------------------//
+		thirdSend();
+		// --------------------第三次发送短信--------------------------//
+
+		// --------------------发送短信失败----------------------------//
+		sendFail();
+		// --------------------发送短信失败----------------------------//
+
+	}
+
+	/**
+	 * 发送短信失败
+	 */
+	public void sendFail() {
+		// 发送短信失败集合
+		List<SMSBean> sendFail = smsService.querySMS(3);
+		SMSBean bean = null;
+		if (null != sendFail && sendFail.size() > 0) {
+			for (int i = 0; i < sendFail.size(); i++) {
+				bean = sendFail.get(i);
+				try {
+					// 更新状态
+					smsService.updateStatus(bean.getMsgId(), 3, 200);
+					
+					// 写告警表
+					smsService.insertAlarm(new AlarmBean(bean.getMonitorId(), bean.getMsgType(), "D5", 0));
+				} catch (Exception e) {
+					e.printStackTrace();
+					continue;
+				}
+			}
+		}
+	}
+
+	/**
+	 * 第三次发送短信
+	 */
+	public void thirdSend() {
+		// 第三次发送短信集合
+		List<SMSBean> thirdSend = smsService.querySMS(2);
+		SMSBean bean = null;
+		if (null != thirdSend && thirdSend.size() > 0) {
+			for (int i = 0; i < thirdSend.size(); i++) {
+				bean = thirdSend.get(i);
+				try {
+					// 拼装发送报文
+					sendSMS(bean);
+					// 更新状态和时间
+					smsService.updateStatuAndTime(bean.getMsgId(), 2, 3);
+				} catch (Exception e) {
+					e.printStackTrace();
+					continue;
+				}
+			}
+		}
+	}
+
+	/**
+	 * 第二次发送
+	 */
+	public void secondSend() {
+		// 第二次发送短信集合
+		List<SMSBean> secondSend = smsService.querySMS(1);
+		SMSBean bean = null;
+		if (null != secondSend && secondSend.size() > 0) {
+			for (int i = 0; i < secondSend.size(); i++) {
+				bean = secondSend.get(i);
+				try {
+					// 拼装发送报文
+					sendSMS(bean);
+					// 更新状态和时间
+					smsService.updateStatuAndTime(bean.getMsgId(), 1, 2);
+				} catch (Exception e) {
+					e.printStackTrace();
+					continue;
+				}
+			}
+		}
+	}
+
+	/**
+	 * 第一次发送短信
+	 */
+	public void fristSend() {
+		// 第一次发送短信集合
+		List<SMSBean> fristSend = smsService.querySMS(0);
+
+		String waterNo = null;
+		SMSBean bean = null;
+
+		if (null != fristSend && fristSend.size() > 0) {
+			for (int i = 0; i < fristSend.size(); i++) {
+				bean = fristSend.get(i);
+				try {
+					waterNo = bean.getWaterNo();
+					if (null == waterNo || "".equals(waterNo)) {
+						// 获取流水号
+						waterNo = smsService.createWaterNo();
+						// 更新流水号
+						smsService.updateWaterNo(bean.getMsgId(), waterNo);
+					}
+					// 拼装发送报文
+					sendSMS(bean);
+					// 更新状态和时间
+					smsService.updateStatuAndTime(bean.getMsgId(), 0, 1);
+				} catch (Exception e) {
+					e.printStackTrace();
+					continue;
+				}
+			}
+		}
+	}
+
+	/**
+	 * 拼装报文，发送短信
+	 */
+	public void sendSMS(SMSBean bean) {
+		
+		
+		
 	}
 }
