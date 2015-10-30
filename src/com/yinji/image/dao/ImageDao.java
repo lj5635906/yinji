@@ -24,7 +24,7 @@ public class ImageDao {
 	 */
 	public List<Map<String, Object>> getList() {
 		String sql = "SELECT ImageId,ImagePath FROM UR_CathMonitorDataImage WHERE DataStatus = 0";
-		return jdbcTemplate.queryForList(sql);
+ 		return jdbcTemplate.queryForList(sql);
 	}
 
 	/**
