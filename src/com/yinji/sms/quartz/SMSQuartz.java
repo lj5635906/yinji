@@ -1,12 +1,14 @@
 package com.yinji.sms.quartz;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
 import com.yinji.sms.bean.AlarmBean;
 import com.yinji.sms.bean.SMSBean;
 import com.yinji.sms.service.SMSService;
+import com.yinji.sms.util.SendSms;
 
 /**
  * @author : Roger
@@ -31,7 +33,7 @@ public class SMSQuartz {
 		// --------------------第二次发送短信--------------------------//
 		secondSend();
 		// --------------------第二次发送短信--------------------------//
-		
+
 		// --------------------第三次发送短信--------------------------//
 		thirdSend();
 		// --------------------第三次发送短信--------------------------//
@@ -55,9 +57,10 @@ public class SMSQuartz {
 				try {
 					// 更新状态
 					smsService.updateStatus(bean.getMsgId(), 3, 200);
-					
+
 					// 写告警表
-					smsService.insertAlarm(new AlarmBean(bean.getMonitorId(), bean.getMsgType(), "D5", 0));
+					smsService.insertAlarm(new AlarmBean(bean.getMonitorId(),
+							bean.getMsgType(), "D5", 0));
 				} catch (Exception e) {
 					e.printStackTrace();
 					continue;
@@ -132,6 +135,7 @@ public class SMSQuartz {
 						waterNo = smsService.createWaterNo();
 						// 更新流水号
 						smsService.updateWaterNo(bean.getMsgId(), waterNo);
+						bean.setWaterNo(waterNo);
 					}
 					// 拼装发送报文
 					sendSMS(bean);
@@ -149,8 +153,30 @@ public class SMSQuartz {
 	 * 拼装报文，发送短信
 	 */
 	public void sendSMS(SMSBean bean) {
+		String mobile = bean.getMobileCode();
+		if(null == mobile){
+			return ;
+		}
 		
-		
-		
+		// 获取参数信息
+		Map<String, String> properties = smsService.queryProperty();
+		// 起始标记
+		String start = "F2F2";
+		// 数据网管IP地址
+		String ipaddr = properties.get("");
+		// 数据网管端口
+		String port = properties.get("");
+		// 设备标识
+		String monitorCode = bean.getMonitorCode();
+		// 流水号
+		String waterNo = bean.getWaterNo();
+		// 功能
+		String function = bean.getMsgType();
+		// 数据参数
+		String content = bean.getContent();
+
+		SendSms sms = new SendSms(mobile, start + ipaddr + port
+				+ monitorCode + waterNo + function + content);
+		sms.SendMsg();
 	}
 }

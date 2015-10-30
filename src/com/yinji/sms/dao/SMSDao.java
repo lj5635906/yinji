@@ -33,13 +33,13 @@ public class SMSDao {
 	}
 
 	/**
-	 * 通过状态查询发送短信结果集
+	 * 同过sql查询结果集
 	 * 
 	 * @param sql
 	 *            查询语句
 	 * @return List<Map<String, Object>>
 	 */
-	public List<Map<String, Object>> querySMS(String sql) {
+	public List<Map<String, Object>> query(String sql) {
 		return jdbcTemplate.queryForList(sql);
 	}
 
@@ -127,5 +127,5 @@ public class SMSDao {
 			throw new Exception("insert alarm fail");
 		}
 	}
-
+	
 }

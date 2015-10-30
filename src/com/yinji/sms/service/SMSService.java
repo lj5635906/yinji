@@ -2,6 +2,7 @@ package com.yinji.sms.service;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -73,7 +74,7 @@ public class SMSService {
 			sql.append(" > 300 ");
 		}
 		// 第一次发送结果集
-		List<Map<String, Object>> lm = smsDao.querySMS(sql.toString());
+		List<Map<String, Object>> lm = smsDao.query(sql.toString());
 
 		if (null == lm || lm.size() == 0) {
 			return null;
@@ -155,6 +156,31 @@ public class SMSService {
 	 */
 	public void insertAlarm(AlarmBean alarm) throws Exception {
 		smsDao.insertAlarm(alarm);
+	}
+	
+	/**
+	 * 获取参数信息
+	 * @return
+	 * 	Map<String,String>
+	 */
+	public Map<String,String> queryProperty(){
+		String sql = "SELECT ParamName,ParamValue FROM Property";
+		
+		List<Map<String, Object>> lm = smsDao.query(sql.toString());
+		if (null == lm || lm.size() == 0) {
+			return null;
+		}
+
+		Map<String,String> propertis = new HashMap<String,String>();
+		
+ 		for (int i = 0; i < lm.size(); i++) {
+			Map<String, Object> map = lm.get(i);
+			if (null != map && map.size() > 0) {
+				propertis.put(String.valueOf(map.get("ParamName")), String.valueOf(map.get("ParamValue")));
+			}
+		}
+		
+ 		return propertis;
 	}
 
 }
