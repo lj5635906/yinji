@@ -1,17 +1,13 @@
 package com.yinji.sms.service;
 
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import javax.annotation.Resource;
-
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import com.yinji.sms.bean.AlarmBean;
 import com.yinji.sms.bean.SMSBean;
 import com.yinji.sms.dao.SMSDao;
@@ -75,8 +71,7 @@ public class SMSService {
 		}
 		// 第一次发送结果集
 		List<Map<String, Object>> lm = smsDao.query(sql.toString());
-
-		if (null == lm || lm.size() == 0) {
+ 		if (null == lm || lm.size() == 0) {
 			return null;
 		}
 
@@ -87,8 +82,8 @@ public class SMSService {
 			if (null != map && map.size() > 0) {
 				bean = new SMSBean();
 				bean.setContent(String.valueOf(map.get("Content")));
-				bean.setCreateTime(Timestamp.valueOf(String
-						.valueOf("CreateTime")));
+//				bean.setCreateTime(Timestamp.valueOf(String
+//						.valueOf("CreateTime")));
 				bean.setMonitorCode(String.valueOf(map.get("MonitorCode")));
 				bean.setMonitorId(String.valueOf(map.get("MonitorID")));
 				bean.setMsgId(String.valueOf(map.get("MsgId")));

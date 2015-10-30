@@ -70,7 +70,7 @@ public class ImageService {
 			bean = uploads.get(i);
 			if (null != bean) {
 				if (HttpCode.code_200 == bean.getCode()) {
-					sql = new StringBuffer("UPDATE SET DataStatus = 1,");
+					sql = new StringBuffer("UPDATE UR_CathMonitorDataImage SET DataStatus = 1,");
 					sql.append("ImageCloudPath = '");
 					sql.append(bean.getKey()+"' ");
 					sql.append("WHERE ImageId = '"+bean.getImageId()+"'");
@@ -78,7 +78,6 @@ public class ImageService {
 				}
 			}
 		}
-
 		imageDao.batchUpdate(sqls);
 	}
 

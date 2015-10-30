@@ -1,14 +1,10 @@
 package com.yinji.sms.dao;
 
-import java.sql.Timestamp;
 import java.util.List;
 import java.util.Map;
-
 import javax.annotation.Resource;
-
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
-
 import com.yinji.sms.bean.AlarmBean;
 
 /**
@@ -53,7 +49,7 @@ public class SMSDao {
 	 * @throws Exception
 	 */
 	public void updateWaterNo(String msgId, String waterNo) throws Exception {
-		String sql = "UPDATE SET WaterNo = '" + waterNo + "' WHERE MsgId = '"
+		String sql = "UPDATE MsgQueueCache SET WaterNo = '" + waterNo + "' WHERE MsgId = '"
 				+ msgId + "'";
 		int row = jdbcTemplate.update(sql);
 		if (row == 0) {
@@ -74,11 +70,9 @@ public class SMSDao {
 	 */
 	public void updateStatuAndTime(String msgId, int beforStatus,
 			int afterStatus) throws Exception {
-		String sql = "UPDATE SET Status = " + beforStatus + ",UpdateTime = "
-				+ new Timestamp(System.currentTimeMillis())
-				+ " WHERE MsgId = '" + msgId + "' AND Status = " + beforStatus;
-		int row = jdbcTemplate.update(sql);
-		if (row == 0) {
+		String sql = "UPDATE MsgQueueCache SET Status = " + afterStatus + ",UpdateTime = SYSTIMESTAMP WHERE MsgId = '" + msgId + "' AND Status = " + beforStatus;
+ 		int row = jdbcTemplate.update(sql);
+ 		if (row == 0) {
 			throw new Exception("update waterNo fail");
 		}
 	}
@@ -96,10 +90,10 @@ public class SMSDao {
 	 */
 	public void updateStatus(String msgId, int beforStatus, int afterStatus)
 			throws Exception {
-		String sql = "UPDATE SET Status = " + beforStatus + " WHERE MsgId = '"
+		String sql = "UPDATE MsgQueueCache SET Status = " + afterStatus + " WHERE MsgId = '"
 				+ msgId + "' AND Status = " + beforStatus;
-		int row = jdbcTemplate.update(sql);
-		if (row == 0) {
+ 		int row = jdbcTemplate.update(sql);
+ 		if (row == 0) {
 			throw new Exception("update waterNo fail");
 		}
 	}

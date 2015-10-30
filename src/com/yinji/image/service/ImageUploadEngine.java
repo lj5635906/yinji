@@ -2,6 +2,8 @@ package com.yinji.image.service;
 
 import java.util.UUID;
 import java.util.concurrent.Callable;
+import java.util.concurrent.atomic.AtomicInteger;
+
 import com.qiniu.constant.Constant;
 import com.qiniu.http.Response;
 import com.qiniu.server.QiNiuUploadDemo;
@@ -38,9 +40,11 @@ public class ImageUploadEngine implements Callable<UploadInfoBean> {
 		this.auth = auth;
 	}
 
+	static AtomicInteger ai = new AtomicInteger(1);
+	
 	@Override
 	public UploadInfoBean call() throws Exception {
-
+		
 		UploadInfoBean bean = new UploadInfoBean();
 		QiNiuUploadDemo upload = new QiNiuUploadDemo();
 		// 获取上传token
@@ -50,6 +54,7 @@ public class ImageUploadEngine implements Callable<UploadInfoBean> {
 		// 响应信息
 		Response response = null;
 		try {
+			System.out.println("上传 : "+ai.getAndIncrement()+" ; path : "+image.getPath()+" ; key : "+key);
 			response = upload.breakpointUpload(image.getPath(), key, token);
 			// 上传返回信息
 			bean.setCode(response.statusCode);

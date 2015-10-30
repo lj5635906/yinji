@@ -24,7 +24,7 @@ public class SMSQuartz {
 	 * 任务执行方法
 	 */
 	public void execute() {
-		System.out.println("SMSQuartz开始作业调度了..");
+//		System.out.println("SMSQuartz开始作业调度了..");
 
 		// --------------------第一次发送短信--------------------------//
 		fristSend();
@@ -37,7 +37,7 @@ public class SMSQuartz {
 		// --------------------第三次发送短信--------------------------//
 		thirdSend();
 		// --------------------第三次发送短信--------------------------//
-
+		
 		// --------------------发送短信失败----------------------------//
 		sendFail();
 		// --------------------发送短信失败----------------------------//
@@ -130,7 +130,7 @@ public class SMSQuartz {
 				bean = fristSend.get(i);
 				try {
 					waterNo = bean.getWaterNo();
-					if (null == waterNo || "".equals(waterNo)) {
+					if (null == waterNo || "".equals(waterNo) || "null".equals(waterNo)) {
 						// 获取流水号
 						waterNo = smsService.createWaterNo();
 						// 更新流水号
@@ -163,9 +163,9 @@ public class SMSQuartz {
 		// 起始标记
 		String start = "F2F2";
 		// 数据网管IP地址
-		String ipaddr = properties.get("");
+		String ipaddr = properties.get("GateWayIp");
 		// 数据网管端口
-		String port = properties.get("");
+		String port = properties.get("GateWayPort");
 		// 设备标识
 		String monitorCode = bean.getMonitorCode();
 		// 流水号
@@ -174,9 +174,11 @@ public class SMSQuartz {
 		String function = bean.getMsgType();
 		// 数据参数
 		String content = bean.getContent();
-
-		SendSms sms = new SendSms(mobile, start + ipaddr + port
-				+ monitorCode + waterNo + function + content);
+		
+		String message = start + ipaddr + port
+				+ monitorCode + waterNo + function + content;
+		System.out.println("短信内容 : "+message);
+		SendSms sms = new SendSms(mobile, message);
 		sms.SendMsg();
 	}
 }
