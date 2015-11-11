@@ -1,5 +1,8 @@
 package com.yinji.image.quartz;
 
+import java.io.DataOutputStream;
+import java.net.InetSocketAddress;
+import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -29,7 +32,7 @@ public class ImageQuartz {
 	 * 云存储初始化身份验证信息
 	 */
 	static Auth auth = Auth.create(Constant.ACCESS_KEY, Constant.SECRET_KEY);
-	
+
 	/**
 	 * 定时任务调用的方法
 	 */
@@ -37,15 +40,14 @@ public class ImageQuartz {
 		System.out.println("ImageQuartz开始执行");
 		try {
 			List<ImageBean> images = imageService.getImages();
-			if(null == images || images.size() == 0){
-				return ;
+			if (null == images || images.size() == 0) {
+				return;
 			}
 			List<UploadInfoBean> uploads = new ArrayList<UploadInfoBean>();
 			// 创建一个执行任务的服务
 			ExecutorService es = Executors.newFixedThreadPool(4);
 			for (int i = 0; i < images.size(); i++) {
-				
-				//当前ImageBean
+				// 当前ImageBean
 				ImageBean image = images.get(i);
 				// 需要执行的任务
 				ImageUploadEngine thread = new ImageUploadEngine(image, auth);
@@ -55,10 +57,71 @@ public class ImageQuartz {
 				uploads.add(future.get());
 			}
 			es.shutdown();
-			
+
 			imageService.update(uploads);
+			
+			toSocket();
 		} catch (Exception e) {
 			e.printStackTrace();
+		}
+	}
+
+	public void toSocket() {
+		Socket socket = new Socket();
+		int port = 8888;
+		int timeout = 3000;
+		// 向服务器传输流
+		DataOutputStream os = null;
+		try {
+			socket.setReuseAddress(true);
+			socket.setKeepAlive(true);
+			socket.setTcpNoDelay(true);
+			socket.setSoLinger(true, 0);
+			socket.connect(new InetSocketAddress("192.168.20.10", port),
+					timeout);
+			socket.setSoTimeout(timeout);
+			os = new DataOutputStream(socket.getOutputStream());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		try {
+			// 数据长度 起始
+			os.write(0xF5F5F5F5);
+			os.writeUTF("201511110541020000000662ANet0002");
+			os.writeUTF("0A000032");
+			os.writeUTF("D9");
+			// 将数据传输到服务器
+			os.flush();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	public static byte[] StringToByte(String str) {
+		return StringToByte(str, "UTF-8");
+	}
+
+	public static byte[] StringToByte(String str, String charEncode) {
+		byte[] destObj = null;
+		try {
+			if (null == str || str.trim().equals("")) {
+				destObj = new byte[0];
+				return destObj;
+			} else {
+				destObj = str.getBytes(charEncode);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return destObj;
+	}
+	
+	public static void main(String[] args){
+		byte[] bs = StringToByte("201511110541020000000662ANet0002");
+		
+		for(byte b : bs){
+			System.out.print(b);
 		}
 	}
 }
