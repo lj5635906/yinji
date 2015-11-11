@@ -1,6 +1,7 @@
 package com.yinji.image.quartz;
 
 import java.io.DataOutputStream;
+import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -81,12 +82,6 @@ public class ImageQuartz {
 					timeout);
 			socket.setSoTimeout(timeout);
 			os = new DataOutputStream(socket.getOutputStream());
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
-		try {
-			// 数据长度 起始
 			os.write(0xF5F5F5F5);
 			os.writeUTF("201511110541020000000662ANet0002");
 			os.writeUTF("0A000032");
@@ -95,7 +90,15 @@ public class ImageQuartz {
 			os.flush();
 		} catch (Exception e) {
 			e.printStackTrace();
+		}finally{
+			try {
+				os.close();
+				socket.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
+
 	}
 
 	public static byte[] StringToByte(String str) {
