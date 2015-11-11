@@ -24,7 +24,7 @@ public class SMSQuartz {
 	 * 任务执行方法
 	 */
 	public void execute() {
-//		System.out.println("SMSQuartz开始作业调度了..");
+		System.out.println("SMSQuartz开始作业调度了..");
 
 		// --------------------第一次发送短信--------------------------//
 		fristSend();
