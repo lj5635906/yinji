@@ -34,7 +34,7 @@ public class ImageQuartz {
 	 * 定时任务调用的方法
 	 */
 	public void execute() {
-//		System.out.println("ImageQuartz开始执行");
+		System.out.println("ImageQuartz开始执行");
 		try {
 			List<ImageBean> images = imageService.getImages();
 			if(null == images || images.size() == 0){
