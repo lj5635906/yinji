@@ -7,6 +7,7 @@ import javax.annotation.Resource;
 
 import com.yinji.sms.bean.AlarmBean;
 import com.yinji.sms.bean.SMSBean;
+import com.yinji.sms.dao.SMSDao;
 import com.yinji.sms.service.SMSService;
 import com.yinji.sms.util.SendSms;
 
@@ -19,6 +20,9 @@ public class SMSQuartz {
 
 	@Resource(name = "smsService")
 	private SMSService smsService;
+	
+	@Resource(name = "smsDao")
+	private SMSDao smsDao;
 
 	/**
 	 * 任务执行方法

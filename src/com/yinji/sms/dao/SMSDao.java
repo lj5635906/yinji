@@ -7,7 +7,6 @@ import java.util.Map;
 import javax.annotation.Resource;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Repository;
 import com.yinji.sms.bean.AlarmBean;
 
@@ -134,20 +133,20 @@ public class SMSDao {
 		long monitorID = jdbcTemplate.queryForLong(sqlMonitorID);
 
 		String gateWayId = "SELECT PARAMVALUE FROM PROPERTY Where PARAMNAME = 'GateWayId'";
-		SqlRowSet srs = jdbcTemplate.queryForRowSet(gateWayId);
+
+
+		Map<String, Object> map = jdbcTemplate.queryForMap(gateWayId);
+		String paramvalue = String.valueOf(map.get("PARAMVALUE")).trim();
+
+		String monitorId = String.valueOf(monitorID).trim() + "F";
+
+		String time = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
 		
-		String paramvalue = srs.getString("PARAMVALUE");
-
-		String monitorId = String.valueOf(monitorID) + "F";
-
-		Date d = new Date(System.currentTimeMillis());
-		String time = new SimpleDateFormat("yyyyMMddHHmmss").format(d);
-
-		int len = monitorId.length() + time.length() + paramvalue.length();
+		int len =  time.length() + paramvalue.length();
 		int c = 32 - len;
 
 		String newId = StringUtils.leftPad(String.valueOf(monitorId), c, "0");
-
+ 		
 		return time + newId + paramvalue;
 	}
 
