@@ -40,28 +40,28 @@ public class ImageQuartz {
 	public void execute() {
 		System.out.println("ImageQuartz开始执行");
 		try {
-			List<ImageBean> images = imageService.getImages();
-			if (null == images || images.size() == 0) {
-				return;
-			}
-			List<UploadInfoBean> uploads = new ArrayList<UploadInfoBean>();
-			// 创建一个执行任务的服务
-			ExecutorService es = Executors.newFixedThreadPool(4);
-			for (int i = 0; i < images.size(); i++) {
-				// 当前ImageBean
-				ImageBean image = images.get(i);
-				// 需要执行的任务
-				ImageUploadEngine thread = new ImageUploadEngine(image, auth);
-				// 提交任务并执行，同时返回一个Future对象,通过Future得到任务执行的结果
-				Future<UploadInfoBean> future = es.submit(thread);
-				// 获取执行结果
-				uploads.add(future.get());
-			}
-			es.shutdown();
-
-			imageService.update(uploads);
-			
-			toSocket();
+//			List<ImageBean> images = imageService.getImages();
+//			if (null == images || images.size() == 0) {
+//				return;
+//			}
+//			List<UploadInfoBean> uploads = new ArrayList<UploadInfoBean>();
+//			// 创建一个执行任务的服务
+//			ExecutorService es = Executors.newFixedThreadPool(4);
+//			for (int i = 0; i < images.size(); i++) {
+//				// 当前ImageBean
+//				ImageBean image = images.get(i);
+//				// 需要执行的任务
+//				ImageUploadEngine thread = new ImageUploadEngine(image, auth);
+//				// 提交任务并执行，同时返回一个Future对象,通过Future得到任务执行的结果
+//				Future<UploadInfoBean> future = es.submit(thread);
+//				// 获取执行结果
+//				uploads.add(future.get());
+//			}
+//			es.shutdown();
+//
+//			imageService.update(uploads);
+//			
+//			toSocket();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

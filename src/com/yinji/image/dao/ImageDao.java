@@ -23,7 +23,7 @@ public class ImageDao {
 	 * @return 路径集合
 	 */
 	public List<Map<String, Object>> getList() {
-		String sql = "SELECT ImageId,ImagePath FROM UR_CathMonitorDataImage WHERE ImageCloudPath is null or trim(ImageCloudPath)==''";
+		String sql = "SELECT ImageId,ImagePath FROM UR_CathMonitorDataImage WHERE ImageCloudPath is null or trim(ImageCloudPath)=''";
  		return jdbcTemplate.queryForList(sql);
 	}
 
