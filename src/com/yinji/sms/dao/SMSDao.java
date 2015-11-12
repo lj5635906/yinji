@@ -1,12 +1,10 @@
 package com.yinji.sms.dao;
 
-import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.Resource;
-
 import org.apache.commons.lang.StringUtils;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
@@ -132,7 +130,7 @@ public class SMSDao {
 
 	public String getMonitorID() {
 		
-		String sqlMonitorID = "SELECT SEQ_MonitorID.NEXTVAL";
+		String sqlMonitorID = "SELECT SEQ_MonitorID.NEXTVAL from dual";
 		long monitorID = jdbcTemplate.queryForLong(sqlMonitorID);
 
 		String gateWayId = "SELECT PARAMVALUE FROM PROPERTY Where PARAMNAME = 'GateWayId'";
