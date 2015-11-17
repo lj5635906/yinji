@@ -122,6 +122,7 @@ public class SMSService {
 	 *            更新后状态
 	 * @throws Exception
 	 */
+	@Transactional
 	public void updateStatuAndTime(String msgId, int beforStatus,
 			int afterStatus) throws Exception {
 		smsDao.updateStatuAndTime(msgId, beforStatus, afterStatus);
@@ -137,6 +138,7 @@ public class SMSService {
 	 * 		更新后状态
 	 * @throws Exception
 	 */
+	@Transactional
 	public void updateStatus(String msgId, int beforStatus,
 			int afterStatus) throws Exception {
 		smsDao.updateStatus(msgId, beforStatus, afterStatus);
@@ -149,6 +151,7 @@ public class SMSService {
 	 *            Alarm
 	 * @throws Exception 
 	 */
+	@Transactional
 	public void insertAlarm(AlarmBean alarm) throws Exception {
 		smsDao.insertAlarm(alarm);
 	}
