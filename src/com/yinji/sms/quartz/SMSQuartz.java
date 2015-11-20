@@ -9,7 +9,7 @@ import com.yinji.sms.bean.AlarmBean;
 import com.yinji.sms.bean.SMSBean;
 import com.yinji.sms.dao.SMSDao;
 import com.yinji.sms.service.SMSService;
-import com.yinji.sms.util.SendSms;
+import com.yinji.sms.service.SendSMSToDB;
 
 /**
  * @author : Roger
@@ -182,8 +182,11 @@ public class SMSQuartz {
 		String message = start + ipaddr + port
 				+ monitorCode + waterNo + function + content;
 		System.out.println("短信内容 : "+message);
-		SendSms sms = new SendSms("13880469946", message);
-//		SendSms sms = new SendSms(mobile, message);
-		sms.SendMsg();
+//		try {
+//			SendSMSToDB toDB = new SendSMSToDB();
+//			toDB.saveSMS(mobile, message);
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		}
 	}
 }

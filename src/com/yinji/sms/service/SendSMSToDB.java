@@ -4,8 +4,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
-
-import org.springframework.transaction.annotation.Transactional;
+import java.sql.Timestamp;
 
 /**
  * @author : Roger
@@ -27,7 +26,7 @@ public class SendSMSToDB {
 		}
 		
 		try {
-			con = DriverManager.getConnection("jdbc:mysql://192.168.20.25:3306/sms", "root", "root");
+			con = DriverManager.getConnection("jdbc:mysql://192.168.20.43:3306/sms", "root", "root");
 		} catch (SQLException e) {
  			e.printStackTrace();
 		}
@@ -41,8 +40,9 @@ public class SendSMSToDB {
 		}
 		Statement st = null;
 		try {
-			String sql = "insert into WBS_SMS_SendBuffer(MobileNo,SmsContent) values('"+mobile+"','"+message+"')";
-			
+			String sql = "insert into WBS_SMS_SendBuffer(MobileNo,SmsContent,SendTime)"
+					+ " values('"+mobile+"','"+message+"','"+new Timestamp(System.currentTimeMillis())+"')";
+			System.out.println(sql);
 			con.setAutoCommit(false);
 			
 			st = con.createStatement();
@@ -51,7 +51,9 @@ public class SendSMSToDB {
 			if(row > 0){
 				con.commit();
 			}
+			System.out.println("insert successful");
 		} catch (Exception e) {
+			System.out.println("insert failer");
 			e.printStackTrace();
 			con.rollback();
 		}finally{
