@@ -70,7 +70,7 @@ public class ImageQuartz {
 	public void toSocket() {
 		Socket socket = new Socket();
 		int port = 8888;
-		int timeout = 3000;
+		int timeout = 20000;
 		// 向服务器传输流
 		DataOutputStream os = null;
 		try {
